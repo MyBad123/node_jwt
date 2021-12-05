@@ -1,23 +1,16 @@
-mongoose = require('mongoose');
-module.exports = {
-    connect: DB_URL => {
+const mongoose = require('mongoose');
 
-        mongoose.connect(DB_URL);
+let userSchema = mongoose.Schema({
+    username: String,
+    password: String,
+    access: String,
+    refresh: String
+})
 
-        //Log an error if we fail to connect
-        mongoose.connection.on('error', err => {
-            console.error(err);
-            console.log(
-            'MongoDB connection failed: ' + DB_URL
-        );
+let userModel = mongoose.model(
+    'User',
+    userSchema
+)
 
-        process.exit();
+module.exports = userModel
 
-        });
-    },
-
-    //close the connection
-    close: () => {
-        mongoose.connection.close();
-    }
-};

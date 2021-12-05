@@ -1,14 +1,52 @@
 const express = require('express');
-const db = require('./db');
+const mongoose = require('mongoose');
+const { graphqlHTTP } = require('express-graphql');
+const schema = require('./schema');
+const userModel = require('./db')
 
-const port = 4000;
-let app = express();
+const root = {
+    getHello: () => {
+        return "Hello"
+    },
+    createUser: async ({input}) => {
+        let b = await userModel.find({
+            username: "wow"
+        })
+        if (b) {
+            console.log("error my")
+            return null
+        }
+        
+        const user = new userModel({
+            username: "wow",
+            password: "wow",
+            access: "wow",
+            refresh: "wow"
+        })
+        await user.save()
 
-db.connect("mongodb://127.0.0.1:27017/myusers");
+        return null
+    },
+    
+}
 
-app.get('/', (req, res) => {
-    res.send("hello");
-})
-app.listen({port}, () => {
-    console.log('it is run');
-})
+const app = express();
+app.use('/', graphqlHTTP({
+    graphiql: true,
+    schema,
+    rootValue: root
+}))
+
+const start1 = async () => {
+    try {
+        app.listen(4000, () => {
+            mongoose.connect("mongodb://localhost/users")
+            console.log("listen");
+        })
+    }
+    catch (e) {
+        console.log(e);
+    }
+};
+
+start1();

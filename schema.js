@@ -4,7 +4,6 @@ const { connect } = require('mongoose');
 const chema = buildSchema(`
     type User {
         username: String
-        password: String
     }
 
     type UserTokens {
